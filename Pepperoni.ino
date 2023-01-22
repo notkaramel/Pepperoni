@@ -4,8 +4,8 @@ const int A_1B = 9; // Motor A_1B
 const int B_1A = 5; // Motor B_1A
 const int B_1B = 3; // Motor B_1B
 
-const int IR1 = 13;      // InfraRed sensor 
-const int IR2 = 2;     // InfraRed sensor 2
+const int IR1 = 13;     // InfraRed sensor
+const int IR2 = 2;      // InfraRed sensor 2
 const int echoPin = 11; // Ultrasonic sensor echo
 const int trigPin = 12; // Ultrasonic sensor trigger
 
@@ -13,6 +13,7 @@ const int delayTime = 150;
 const int speed = 150;
 const int stop = 0;
 
+// Serial monitor: 9600 
 void setup()
 {
     Serial.begin(9600);
@@ -33,65 +34,66 @@ void setup()
     Serial.println("Setup complete");
 }
 
-void rightForward(){
+void rightForward()     // Right wheel go forward
+{
     analogWrite(B_1A, speed);
     analogWrite(B_1B, stop);
 }
 
-void rightBackward(){
+void rightBackward()    // Right wheel go backward
+{
     analogWrite(B_1A, stop);
     analogWrite(B_1B, speed);
 }
 
-void leftForward(){
+void leftForward()      // Left wheel go forward
+{
     analogWrite(A_1A, stop);
     analogWrite(A_1B, speed);
 }
 
-void leftBackward(){
+void leftBackward()     // Left wheel go backward
+{
     analogWrite(A_1A, speed);
     analogWrite(A_1B, stop);
 }
 
-void forward()
+void forward()         // Both wheels go forward
 {
     leftForward();
     rightForward();
 }
 
-void turnLeft(int delayTime)
+void turnLeft(int delayTime)    // Turn left for a certain amount of time
 {
 
     leftBackward();
     rightForward();
 
     delay(delayTime);
-
 }
 
-void turnRight(int delayTime)
+void turnRight(int delayTime)   // Turn right for a certain amount of time
 {
-
     leftForward();
     rightBackward();
 
     delay(delayTime);
 }
 
-    
-bool detectObstacle(long distance)
+bool detectObstacle(long distance)  // Detect obstacle
 {
-    if (distance<=18) {
+    if (distance <= 18)
+    {
         return true;
     }
     return false;
 }
 
-void avoidObstacle()
+void avoidObstacle()   // Avoid obstacle with a left curve
 {
     // Turn about 45 degrees left
     turnLeft(delayTime);
-
 
     // Left motor forward more
     analogWrite(A_1A, speed * 1.5);
@@ -119,10 +121,9 @@ void avoidObstacle()
     // analogWrite(B_1B, stop);
 
     // delay(delayTime);
-
 }
 
-void brake(int timeDelay)
+void brake(int timeDelay)  // Brake for a certain amount of time
 {
     analogWrite(A_1A, stop);
     analogWrite(A_1B, stop);
@@ -157,7 +158,6 @@ void go()
     // {
     //     brake();
     // }
-    
 }
 
 void loop()
@@ -169,34 +169,34 @@ void loop()
     Serial.println(digitalRead(IR2));
 
     // delay(delayTime);
+    // turnLeft(500);
 
-    turnLeft(500);
-    
-    // long duration;
-    // long distance;
+    long duration;
+    long distance;
 
-    // // Clear the trigPin by setting it LOW:
-    // digitalWrite(trigPin, LOW);
-    // delayMicroseconds(5);
+    // Clear the trigPin by setting it LOW:
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(5);
 
-    // // Trigger the sensor by setting the trigPin high for 10 microseconds:
-    // digitalWrite(trigPin, HIGH);
-    // delayMicroseconds(10);
-    // digitalWrite(trigPin, LOW);
+    // Trigger the sensor by setting the trigPin high for 10 microseconds:
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);
 
-    // // Read the echoPin, pulseIn() returns the duration (length of the pulse) in microseconds:
-    // duration = pulseIn(echoPin, HIGH);
-    // // Calculate the distance:
-    // distance = duration * 0.034 / 2;
+    // Read the echoPin, pulseIn() returns the duration (length of the pulse) in microseconds:
+    duration = pulseIn(echoPin, HIGH);
+    // Calculate the distance:
+    distance = duration * 0.034 / 2;
 
-    // // Print the distance on the Serial Monitor (Ctrl+Shift+M):
-    // Serial.print("Distance: ");
-    // Serial.print(distance);
-    // Serial.print("\tDuration: ");
-    // Serial.println(duration);
+    // Print the distance on the Serial Monitor (Ctrl+Shift+M):
+    Serial.print("Distance: ");
+    Serial.print(distance);
+    Serial.print("\tDuration: ");
+    Serial.println(duration);
 
+    if (detectObstacle(distance)) {
+        avoidObstacle();
+    }
 
-    // if (detectObstacle(distance)) {
-    //     avoidObstacle();
-    // }
+    go();
 }
