@@ -9,7 +9,7 @@ const int IR2 = 2;      // InfraRed sensor 2
 const int echoPin = 11; // Ultrasonic sensor echo
 const int trigPin = 12; // Ultrasonic sensor trigger
 
-const int delayTime = 150;
+const int delayTime = 151;
 const int speed = 150;
 const int stop = 0;
 
